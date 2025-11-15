@@ -1,0 +1,12 @@
+[Unit]
+Description=Gong Server
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /path/to/gongserver.py --sound-file /path/to/your/sound.mp3
+WorkingDirectory=/path/to/gongserver/
+User=pi
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
