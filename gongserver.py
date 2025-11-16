@@ -8,7 +8,11 @@ class GongHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         print("Received request. Playing sound.")
         try:
-            subprocess.run(["mpg123", self.server.sound_file], check=True)
+            cmd = ["mpg123"]
+            if self.server.mono:
+                cmd.append("-m")
+            cmd.append(self.server.sound_file)
+            subprocess.run(cmd, check=True)
         except FileNotFoundError:
             print("mpg123 not found. Please install it.")
         except subprocess.CalledProcessError as e:
@@ -21,12 +25,14 @@ def main():
     parser = argparse.ArgumentParser(description="A simple webserver that plays a sound on request.")
     parser.add_argument("--sound-file", required=True, help="Path to the sound file to play.")
     parser.add_argument("--port", type=int, default=8000, help="Port to listen on.")
+    parser.add_argument("--mono", action="store_true", help="Force mono output.")
     args = parser.parse_args()
 
     Handler = GongHandler
     httpd = socketserver.TCPServer(("", args.port), Handler)
     httpd.allow_reuse_address = True
     httpd.sound_file = args.sound_file
+    httpd.mono = args.mono
 
     print(f"Serving at port {args.port}")
     httpd.serve_forever()

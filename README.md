@@ -28,6 +28,11 @@ sudo apt-get install mpg123
     python3 gongserver.py --sound-file /path/to/your/sound.mp3 --port 8080
     ```
 
+    You can also force mono output:
+    ```bash
+    python3 gongserver.py --sound-file /path/to/your/sound.mp3 --mono
+    ```
+
 2.  **Trigger the sound:**
 
     Make an HTTP request to the server. You can do this from another terminal using `curl`:
