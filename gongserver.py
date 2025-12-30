@@ -6,20 +6,21 @@ import subprocess
 
 class GongHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Gong!\n")
+
         print("Received request. Playing sound.")
         try:
             cmd = ["mpg123"]
             if self.server.mono:
                 cmd.append("-m")
             cmd.append(self.server.sound_file)
-            subprocess.run(cmd, check=True)
+            subprocess.Popen(cmd)
         except FileNotFoundError:
             print("mpg123 not found. Please install it.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error playing sound: {e}")
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"Gong!\n")
+        except Exception as e:
+            print(f"Error starting sound process: {e}")
 
 def main():
     parser = argparse.ArgumentParser(description="A simple webserver that plays a sound on request.")
