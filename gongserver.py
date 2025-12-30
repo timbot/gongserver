@@ -3,6 +3,7 @@ import http.server
 import socketserver
 import argparse
 import subprocess
+import signal
 
 class GongHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -23,6 +24,7 @@ class GongHandler(http.server.SimpleHTTPRequestHandler):
             print(f"Error starting sound process: {e}")
 
 def main():
+    signal.signal(signal.SIGCHLD, signal.SIG_IGN)
     parser = argparse.ArgumentParser(description="A simple webserver that plays a sound on request.")
     parser.add_argument("--sound-file", required=True, help="Path to the sound file to play.")
     parser.add_argument("--port", type=int, default=8000, help="Port to listen on.")
